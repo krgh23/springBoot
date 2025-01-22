@@ -1,0 +1,13 @@
+jackson-dataformat-xml 디펜던시
+
+링크
+https://mvnrepository.com/artifact/com.fasterxml.jackson.dataformat/jackson-dataformat-xml/2.18.2
+
+<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.dataformat/jackson-dataformat-xml -->
+<dependency>
+    <groupId>com.fasterxml.jackson.dataformat</groupId>
+    <artifactId>jackson-dataformat-xml</artifactId>
+   /* <version>2.18.2</version> */   <-!!! 지우기
+</dependency>
+
+버전이 관리 되고있는경우엔 경고메시지가 있어서 버전을 지우고 pom.xml에 등록하면됨
