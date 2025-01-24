@@ -47,14 +47,15 @@ public class BoardServiceImpl implements IBoardService {
                                                                 , "display", display
                                                                 , "sort", sort));
     
-    // 페이징 가져오기 (전달 : 게시글 목록을 처리하는 주소(현재 서비스가 동작할 주소), 정렬 방식/목록 개수/검색 같은 추가 파라미터들)
-    String paging = pageUtil.getPaging("/list.do", Map.of("display", display, "sort", sort));
+    // 페이징 가져오기 (전달 : 정렬 방식/목록 개수/검색 같은 추가 파라미터들)
+    String paging = pageUtil.getAsyncPaging(Map.of("display", display, "sort", sort));
     
-    // 결과 반환하기
-    return Map.of("boardList", boardList
+    // 결과 반환하기 
+    return Map.of("boardList", Map.of("board", boardList)
                 , "count", count
                 , "offset", offset
                 , "paging", paging);
+    
   }
 
   @Override
@@ -63,8 +64,21 @@ public class BoardServiceImpl implements IBoardService {
   }
 
   @Override
-  public String registBoard(BoardDto boardDto) {
-    return boardMapper.insertBoard(boardDto) == 1 ? "등록성공" : "등록실패";
+  public Map<String, Object> registBoard(BoardDto boardDto) {
+    int status = 0;
+    String msg = null;
+    try {
+      boardMapper.insertBoard(boardDto);
+      status = 200;
+      msg = "등록 성공";
+    } catch (Exception e) {
+      e.printStackTrace();
+      status = 500;
+      msg = "서버 오류 발생";
+    }
+    return Map.of("status", status
+                , "msg", msg
+                , "registed", boardDto);
   }
   
   @Override
