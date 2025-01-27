@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.min.app05.model.ResponseMessage;
 import com.min.app05.model.dto.InsertUserDto;
 import com.min.app05.model.dto.UpdateUserDto;
-import com.min.app05.model.dto.UserDto;
 import com.min.app05.service.IUserService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,6 +31,7 @@ public class UserController {
    * <확인방법>
    * https://web.postman.co/workspace 사이트 들어가서
    * POST : http://localhost:8080/users 입력
+   * Body 탭클릭
    * row -> JSON
    * 본문
       {
@@ -59,6 +59,7 @@ public class UserController {
    * <확인방법>
    * https://web.postman.co/workspace 사이트 들어가서
    * PUT : http://localhost:8080/users 입력
+   * Body 탭클릭
    * row -> JSON
    * 본문
       {
@@ -81,6 +82,7 @@ public class UserController {
    * <확인방법>
    * https://web.postman.co/workspace 사이트 들어가서
    * PUT : http://localhost:8080/users/1 입력
+   * Body 탭클릭
    * row -> JSON
    * 본문
       {
