@@ -14,7 +14,7 @@
         #{email}
       , #{pwd}
       , #{nickname}
-      , NOW()
+      , #{createDt}
     )
   </insert>
     

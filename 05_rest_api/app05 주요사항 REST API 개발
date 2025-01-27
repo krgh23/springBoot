@@ -33,3 +33,21 @@ REST API 설계 방식
 7. 쿼리 스트링 방식이 아닌 경로 변수 방식을 사용합니다.
   1) 쿼리 스트링 : url?userId=1
   2) 경로 변수   : url/userId/1
+  
+  
+  
+  
+  
+  -----------------------------------------------------------------------------
+메이븐레파지도리 검색 :  SpringDoc OpenAPI Starter WebMVC UI
+https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-starter-webmvc-ui/2.6.0  
+  
+  <!-- https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-starter-webmvc-ui -->
+<dependency>
+    <groupId>org.springdoc</groupId>
+    <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+    <version>2.6.0</version>
+</dependency>
+  
+  
+  

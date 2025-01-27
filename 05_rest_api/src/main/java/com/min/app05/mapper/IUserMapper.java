@@ -9,10 +9,10 @@ import com.min.app05.model.dto.UserDto;
 
 @Mapper
 public interface IUserMapper {
-  int insertUser(UserDto userDto);
-  int updateUser(UserDto userDto);
-  int deleteUser(int userId);
-  int selectUserCount();
-  List<UserDto> selectUserCount(Map<String, Object> map);
-  UserDto selectUserById(int userId);
+  int insertUser(UserDto userDto) throws Exception;
+  int updateUser(UserDto userDto) throws Exception;
+  int deleteUser(int userId) throws Exception;
+  int selectUserCount() throws Exception;
+  List<UserDto> selectUserList(Map<String, Object> map) throws Exception;
+  UserDto selectUserById(int userId) throws Exception;
 }
