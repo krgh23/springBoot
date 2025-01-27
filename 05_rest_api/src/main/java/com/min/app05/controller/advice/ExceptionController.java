@@ -29,9 +29,9 @@ public class ExceptionController {
   public ResponseEntity<ResponseErrorMessage> handleUserRegistException1(DuplicateKeyException e) {
     
     ResponseErrorMessage errorMessage = ResponseErrorMessage.builder()
-                                          .code("ERROR_CODE_00000")
-                                          .error(e.getMessage())
-                                          .description("기존 회원과 동일한 이메일이 입력되었습니다.")
+                                          .code("00")
+                                          .message("중복된 키 입력") 
+                                          .describe("기존 회원과 동일한 이메일이 입력되었습니다")
                                         .build();
     
     return ResponseEntity.badRequest().body(errorMessage);
@@ -42,47 +42,48 @@ public class ExceptionController {
   public ResponseEntity<ResponseErrorMessage> handleUserRegistException2(MethodArgumentNotValidException e) {
     
     String code = null;
-    String error = null;
-    String description = null;
+    String message = null;
+    String describe = null;
     
     BindingResult bindingResult = e.getBindingResult();
     
     if(bindingResult.hasErrors()) {
       
-      // 에러 메시지 (유효성 검사 설정 시 작성한 메시지)
-      error = bindingResult.getFieldError().getDefaultMessage();
-      
-      // 코드(code)에 따른 code 와 description 설정
+      // 코드(code)에 따른 code 와 message 설정
       switch (bindingResult.getFieldError().getCode()) {
       case "NotBlank":
-        code = "ERROR_CODE_00001";
-        description = "필수 입력 값이 누락되거나 공백입니다.";
+        code = "01";
+        message = "필수 입력 값의 누락 또는 공백 입력";
         break;
       case "Size":
-        code = "ERROR_CODE_00002";
-        description = "크기를 벗어난 값이 입력되었습니다.";
+        code = "02";
+        message = "입력 가능한 크기를 벗어난 값 입력";
         break;
       }
+      
+      // 예외 메시지 설명 (유효성 검사 설정 시 작성한 메시지)
+      describe = bindingResult.getFieldError().getDefaultMessage();
       
     }
     
     ResponseErrorMessage errorMessage = ResponseErrorMessage.builder()
                                     .code(code)
-                                    .error(error)
-                                    .description(description)
+                                    .message(message)
+                                    .describe(describe)
                                   .build();
          
     return ResponseEntity.badRequest().body(errorMessage);
     
   }
   
+  // 경로 변수로 전달된 값이 정수가 아닌 경우
   @ExceptionHandler(value = MethodArgumentTypeMismatchException.class)
   public ResponseEntity<ResponseErrorMessage> handleUserRegistException3(MethodArgumentTypeMismatchException e) {
     
     ResponseErrorMessage errorMessage = ResponseErrorMessage.builder()
-        .code("ERROR_CODE_00003")
-        .error(e.getMessage())
-        .description("잘못된 데이터가 입력되었습니다.")
+        .code("03")
+        .message("경로 변수 오류")
+        .describe("잘못된 타입의 데이터가 입력되었습니다")
       .build();
     
     return ResponseEntity.badRequest().body(errorMessage);
@@ -93,9 +94,9 @@ public class ExceptionController {
   public ResponseEntity<ResponseErrorMessage> handleUserRegistException4(UserNotFoundException e) {
     
     ResponseErrorMessage errorMessage = ResponseErrorMessage.builder()
-        .code("ERROR_CODE_00004")
-        .error(e.getMessage())
-        .description("데이터를 찾을 수 없습니다.")
+        .code("404")
+        .message(e.getMessage())  // UserServiceImpl 에서 전달한 예외 메시지
+        .describe("해당 회원 데이터를 찾을 수 없습니다")
       .build();
     
     // 정적 메소드로 처리하기 적절한 코드가 없어 생성자를 이용해 객체를 생성합니다. (Not Found 처리)
@@ -103,39 +104,42 @@ public class ExceptionController {
     
   }
   
+  // 경로 변수에 값이 전달되지 않는 경우
   @ExceptionHandler(value = NoResourceFoundException.class)
   public ResponseEntity<ResponseErrorMessage> handleUserRegistException5(NoResourceFoundException e) {
     
     ResponseErrorMessage errorMessage = ResponseErrorMessage.builder()
-        .code("ERROR_CODE_00005")
-        .error(e.getMessage())
-        .description("필요한 정보가 누락되었습니다.")
+        .code("05")
+        .message("경로 변수 누락")
+        .describe("필요한 정보가 누락되었습니다")
         .build();
     
     return ResponseEntity.badRequest().body(errorMessage);
     
   }
   
+  // page, display 파라미터에 정수가 아닌 값을 전달한 경우
   @ExceptionHandler(value = NumberFormatException.class)
   public ResponseEntity<ResponseErrorMessage> handleUserRegistException6(NumberFormatException e) {
     
     ResponseErrorMessage errorMessage = ResponseErrorMessage.builder()
-        .code("ERROR_CODE_00006")
-        .error(e.getMessage())
-        .description("잘못된 요청 파라미터입니다.")
+        .code("06")
+        .message(e.getMessage())
+        .describe("잘못된 요청 파라미터입니다")
         .build();
     
     return ResponseEntity.badRequest().body(errorMessage);
     
   }
   
+  // sort에 잘못된 값이 입력된 경우
   @ExceptionHandler(value = BadSqlGrammarException.class)
   public ResponseEntity<ResponseErrorMessage> handleUserRegistException7(BadSqlGrammarException e) {
     
     ResponseErrorMessage errorMessage = ResponseErrorMessage.builder()
-        .code("ERROR_CODE_00007")
-        .error(e.getMessage())
-        .description("잘못된 쿼리문이 실행되었습니다.")
+        .code("07")
+        .message("잘못된 쿼리문 실행")
+        .describe("파라미터 sort의 값이 잘못 전달되었습니다")
         .build();
     
     return ResponseEntity.badRequest().body(errorMessage);

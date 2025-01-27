@@ -2,6 +2,7 @@ package com.min.app05.model.dto;
 
 import java.sql.Timestamp;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -10,6 +11,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+
+/*
+ * Swagger 설정 Annotation
+ * @Schema
+ */
+
+@Schema(description = "회원 정보 수정 DTO")
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -43,17 +51,22 @@ public class UpdateUserDto {
    * @Pattern(regexp="") : 정규식 지정 
    */
 
+  @Schema(description = "회원 번호")
   private int userId;
   
+  @Schema(description = "이메일", nullable = false, example = "id@example.com")
+  private String email;
+
+  @Schema(description = "비밀번호")
   @Size(min = 4, max = 20, message = "비밀번호는 4 ~ 20자입니다.")
   private String pwd;
   
-  private String email;
-  
+  @Schema(description = "닉네임", nullable = false)
   @NotBlank(message = "닉네임은 반드시 입력해야 합니다.")
   @Size(max = 100, message = "닉네임의 최대 글자 수는 100자입니다.")
   private String nickname;
   
+  @Schema(description = "회원가입일시", example = "yyyy-MM-dd HH:mm:ss")
   private Timestamp createDt;
   
 }

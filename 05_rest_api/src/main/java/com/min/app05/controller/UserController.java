@@ -2,6 +2,7 @@ package com.min.app05.controller;
 
 import java.util.Map;
 
+import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,13 +12,32 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.min.app05.model.ResponseErrorMessage;
 import com.min.app05.model.ResponseMessage;
 import com.min.app05.model.dto.InsertUserDto;
 import com.min.app05.model.dto.UpdateUserDto;
 import com.min.app05.service.IUserService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+
+/*
+ * Swagger 설정 Annotation
+ *   @Tag
+ *   @Operation
+ *   @ApiResponse
+ *   @Parameter
+ */
+
+@Tag(name = "API 목록", description = "회원 관리 API") // 컨트롤러에 붙여주는 설명
 
 // REST API 서비스 개발을 위한 컨트롤러 : @Controller + @ResponseBody
 // 뷰를 반환하지 않는다.
@@ -43,8 +63,29 @@ public class UserController {
    */
   // @Validated : 유효성 검사를 수행할 객체에 추가하는 애너테이션입니다.
   //              실제 유효성 검사는 해당 객체(UserDto)에서 수행합니다.
-
-  @PostMapping("/users")
+  
+  @Operation(summary = "신규 회원 등록", description = "이메일, 비밀번호, 닉네임을 이용하는 신규 회원 등록 기능입니다.")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "201", description = "신규 회원 등록 성공", content = @Content(schema = @Schema(implementation = ResponseMessage.class)))
+    , @ApiResponse(responseCode = "00", description = "중복된 이메일을 이용한 회원 등록 시도", content = @Content(schema = @Schema(example = "\r\n"  // example = "" 여기까지 만들어놓고 메모장에서 작성후 붙여넣기
+        + "          {\r\n"
+        + "            \"code\": \"00\",\r\n"
+        + "            \"error\": \"중복된 키 입력\",\r\n"
+        + "            \"description\": \"기존 회원과 동일한 이메일이 입력되었습니다.\"\r\n"
+        + "          }"
+        )))                                                                                                                                  // 3중 따움표 이스케이프를 대신해주어 편하지만 자바 15버전이상 사용가능함
+    , @ApiResponse(responseCode = "01", description = "잘못된 데이터를 이용한 회원 등록 시도", content = @Content(schema = @Schema(example = """   
+          {
+            "code": "01",
+            "error": "필수 입력 값이 누락되거나 공백입니다.",
+            "description": "크기를 벗어난 값이 입력되었습니다."
+          }
+      """)))
+  /*
+   * , @ApiResponse(responseCode = "01", description = "잘못된 데이터를 이용한 회원 등록 시도", content = @Content(schema = @Schema(implementation = ResponseErrorMessage.class)))
+   */
+  })
+  @PostMapping(value = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseMessage registUser(@Validated @RequestBody InsertUserDto insertUserDto) {
     return ResponseMessage.builder()
               .status(201)  // 201 Created (요청이 성공적으로 처리되었으며, 자원이 생성되었음을 나타내는 성공 상태 응답 코드)
@@ -69,8 +110,8 @@ public class UserController {
       }
       넣고 send 누르기
    */
-  @PutMapping("/users")
-  public ResponseMessage modifyUser(@Validated @RequestBody UpdateUserDto updateUserDto) throws Exception {
+  @PutMapping(value = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseMessage modifyUser2(@Validated @RequestBody UpdateUserDto updateUserDto) throws Exception {
     return ResponseMessage.builder()
               .status(201) // 수정 정보 또한 삽입과 동일한 응답코드를 사용합니다.
               .message("사용자 정보 수정 성공")
@@ -91,13 +132,13 @@ public class UserController {
       }
       넣고 send 누르기
    */
-  @PutMapping("/users/{userId}")
+  @PutMapping(value = "/users/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseMessage modifyUser(@PathVariable int userId, @Validated @RequestBody UpdateUserDto updateUserDto) throws Exception {
     updateUserDto.setUserId(userId);
     return ResponseMessage.builder()
               .status(201)  // 수정 또한 삽입과 동일한 응답 코드를 사용합니다.
                             // 200 OK 를 사용해도 무방합니다.
-              .message("사용자 정보 수정 성공")
+              .message("회원 정보 수정 성공")
               .results(Map.of("user", userService.modifyUser(updateUserDto)))
               .build();
   }
@@ -108,7 +149,7 @@ public class UserController {
    * DELETE : http://localhost:8080/users/1 입력
    * send 누르기
    */
-  @DeleteMapping("/users/{userId}")
+  @DeleteMapping(value = "/users/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseMessage removeUser(@PathVariable int userId) throws Exception {
     userService.removeUser(userId);
     return ResponseMessage.builder()
@@ -116,7 +157,7 @@ public class UserController {
                             // 요청이 성공하였으나, 해당 데이터를 참조할 수 없음을 의미합니다.
                             // 삭제 후 204를 사용할 수 있으나 실제로는 주로 200을 사용합니다.
                             // https://developer.mozilla.org/ko/docs/Web/HTTP/Status/204
-                .message("사용자 삭제 성공")
+                .message("회원 삭제 성공")
                 .results(null)
               .build();
   }
@@ -127,11 +168,20 @@ public class UserController {
    * GET : http://localhost:8080/users 입력
    * send 누르기
    */
-  @GetMapping("/users")
+  @Operation(summary = "회원 목록 조회", description = "page, display, sort 에 따른 회원 목록을 조회하는 기능입니다.")
+  @ApiResponses(value = {
+      @ApiResponse()
+  })
+  @Parameters(value = {
+      @Parameter(name = "page", required = true, description = "조회할 페이지 번호")
+    , @Parameter(name = "display", required = true, description = "페이지에 포함할 회원 수")
+    , @Parameter(name = "sort", required = true, description = "회원 정렬 방식")
+  })
+  @GetMapping(value = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseMessage getUsers(HttpServletRequest request) {
     return ResponseMessage.builder()
               .status(200)  // 요청이 성공하여 가져온 리소스를 메시지 본문으로 전송하였습니다.
-              .message("사용자 목록 조회 성공")
+              .message("회원 목록 조회 성공")
               .results(Map.of("users", userService.getUsers(request)))
             .build();
   }
@@ -142,11 +192,11 @@ public class UserController {
    * GET : http://localhost:8080/users/1 입력
    * send 누르기
    */
-  @GetMapping("/users/{userId}")
+  @GetMapping(value = "/users/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseMessage getUserById(@PathVariable int userId) throws Exception {
     return ResponseMessage.builder()
               .status(200)  // 요청이 성공하여 가져온 리소스를 메시지 본문으로 전송하였습니다.
-              .message("사용자 조회 성공")
+              .message("회원 조회 성공")
               .results(Map.of("user", userService.getUserById(userId)))
             .build();
   }
