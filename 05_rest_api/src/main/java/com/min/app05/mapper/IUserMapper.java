@@ -5,14 +5,15 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import com.min.app05.model.dto.UserDto;
+import com.min.app05.model.dto.UpdateUserDto;
+import com.min.app05.model.dto.InsertUserDto;
 
 @Mapper
 public interface IUserMapper {
-  int insertUser(UserDto userDto) throws Exception;
-  int updateUser(UserDto userDto) throws Exception;
-  int deleteUser(int userId) throws Exception;
-  int selectUserCount() throws Exception;
-  List<UserDto> selectUserList(Map<String, Object> map) throws Exception;
-  UserDto selectUserById(int userId) throws Exception;
+  int insertUser(InsertUserDto insertUserDto);
+  int updateUser(UpdateUserDto updateUserDto);
+  int deleteUser(int userId);
+  int selectUserCount();
+  List<InsertUserDto> selectUserList(Map<String, Object> map);
+  InsertUserDto selectUserById(int userId);
 }

@@ -19,5 +19,4 @@ public class ResponseMessage {
   private int status;                   // 응답 코드
   private String message;               // 응답 메시지
   private Map<String, Object> results;  // 응답 결과
-  
 }

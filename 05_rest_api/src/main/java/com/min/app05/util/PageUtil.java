@@ -50,7 +50,7 @@ public class PageUtil {
    * @return  문자열 형식의 페이지 이동 링크
    */
   public String getPaging(String requestURI, Map<String, Object> params) {
-    
+       
     String queryString = "";
     for(Map.Entry<String, Object> entry : params.entrySet())
       queryString += "&" + entry.getKey() + "=" + entry.getValue();
@@ -103,14 +103,13 @@ public class PageUtil {
     
   }
   
-  
   /**
    * 비동기 처리에서 사용할 자바스크립트 페이징 함수 호출을 제공하는 메소드
    * @param params  요청 주소에 추가할 파라미터
    * @return  문자열 형식의 페이징 함수 호출
    */
   public String getAsyncPaging(Map<String, Object> params) {
-    
+       
     String queryString = "";
     for(Map.Entry<String, Object> entry : params.entrySet())
       queryString += "&" + entry.getKey() + "=" + entry.getValue();

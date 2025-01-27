@@ -3,11 +3,13 @@ package com.min.app05.controller.advice;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.BadSqlGrammarException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import com.min.app05.model.ResponseErrorMessage;
 import com.min.app05.model.exception.UserNotFoundException;
@@ -98,6 +100,45 @@ public class ExceptionController {
     
     // 정적 메소드로 처리하기 적절한 코드가 없어 생성자를 이용해 객체를 생성합니다. (Not Found 처리)
     return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND);
+    
+  }
+  
+  @ExceptionHandler(value = NoResourceFoundException.class)
+  public ResponseEntity<ResponseErrorMessage> handleUserRegistException5(NoResourceFoundException e) {
+    
+    ResponseErrorMessage errorMessage = ResponseErrorMessage.builder()
+        .code("ERROR_CODE_00005")
+        .error(e.getMessage())
+        .description("필요한 정보가 누락되었습니다.")
+        .build();
+    
+    return ResponseEntity.badRequest().body(errorMessage);
+    
+  }
+  
+  @ExceptionHandler(value = NumberFormatException.class)
+  public ResponseEntity<ResponseErrorMessage> handleUserRegistException6(NumberFormatException e) {
+    
+    ResponseErrorMessage errorMessage = ResponseErrorMessage.builder()
+        .code("ERROR_CODE_00006")
+        .error(e.getMessage())
+        .description("잘못된 요청 파라미터입니다.")
+        .build();
+    
+    return ResponseEntity.badRequest().body(errorMessage);
+    
+  }
+  
+  @ExceptionHandler(value = BadSqlGrammarException.class)
+  public ResponseEntity<ResponseErrorMessage> handleUserRegistException7(BadSqlGrammarException e) {
+    
+    ResponseErrorMessage errorMessage = ResponseErrorMessage.builder()
+        .code("ERROR_CODE_00007")
+        .error(e.getMessage())
+        .description("잘못된 쿼리문이 실행되었습니다.")
+        .build();
+    
+    return ResponseEntity.badRequest().body(errorMessage);
     
   }
   
