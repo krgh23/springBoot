@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.min.app05.model.ResponseErrorMessage;
 import com.min.app05.model.ResponseMessage;
+import com.min.app05.model.SortEnum;
 import com.min.app05.model.dto.InsertUserDto;
 import com.min.app05.model.dto.UpdateUserDto;
 import com.min.app05.service.IUserService;
@@ -82,7 +82,7 @@ public class UserController {
           }
       """)))
   /*
-   * , @ApiResponse(responseCode = "01", description = "잘못된 데이터를 이용한 회원 등록 시도", content = @Content(schema = @Schema(implementation = ResponseErrorMessage.class)))
+   * , @ApiResponse(responseCode = "01", description = "잘못된 데이터를 이용한 회원 등록 시도", content = @Content(schema = @Schema("강사님 코드 확인필요")))
    */
   })
   @PostMapping(value = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -91,7 +91,7 @@ public class UserController {
               .status(201)  // 201 Created (요청이 성공적으로 처리되었으며, 자원이 생성되었음을 나타내는 성공 상태 응답 코드)
                             // 200 OK 를 사용해도 무방합니다.
                             // https://developer.mozilla.org/ko/docs/Web/HTTP/Status/201
-              .message("사용자 등록 성공")
+              .message("회원 등록 성공")
               .results(Map.of("user", userService.registUser(insertUserDto)))
               .build();
   }
@@ -168,14 +168,14 @@ public class UserController {
    * GET : http://localhost:8080/users 입력
    * send 누르기
    */
-  @Operation(summary = "회원 목록 조회", description = "page, display, sort 에 따른 회원 목록을 조회하는 기능입니다.")
+  @Operation(summary = "회원 목록 조회", description = "page, display, sort 에 따른 회원 목록 조회하는 기능합니다.")
   @ApiResponses(value = {
       @ApiResponse()
   })
   @Parameters(value = {
       @Parameter(name = "page", required = true, description = "조회할 페이지 번호")
     , @Parameter(name = "display", required = true, description = "페이지에 포함할 회원 수")
-    , @Parameter(name = "sort", required = true, description = "회원 정렬 방식")
+    , @Parameter(name = "sort", required = true, description = "회원 정렬 방식", schema = @Schema(implementation = SortEnum.class))
   })
   @GetMapping(value = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseMessage getUsers(HttpServletRequest request) {
