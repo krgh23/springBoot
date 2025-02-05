@@ -37,9 +37,7 @@ public class LoginFailureHandler extends SimpleUrlAuthenticationFailureHandler {
     String message = null;
     
     if(exception instanceof BadCredentialsException) {
-      message = "아이디나 비밀번호가 일치하지 않습니다.";
-    } else if (exception instanceof UsernameNotFoundException) {
-      message = "존재하지 않는 사용자입니다.";
+      message = "아이디가 없거나 비밀번호가 일치하지 않습니다.";
     } else if (exception instanceof InternalAuthenticationServiceException) {
       message = "서버의 사용자 인증 서비스에 오류가 발생했습니다.";
     } else if (exception instanceof AuthenticationCredentialsNotFoundException) {

@@ -10,6 +10,8 @@ public class AuthController {
   @GetMapping("/auth/login")
   public void login() {}
   
+  @GetMapping("/admin/page")
+  public void admin() {}
   
   
   
