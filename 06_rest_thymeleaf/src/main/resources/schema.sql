@@ -2,7 +2,7 @@ DROP DATABASE IF EXISTS db_boot6;
 CREATE DATABASE IF NOT EXISTS db_boot6;
 USE db_boot6;
 
-DROP TABLE IF EXISTS tbl_addr;
+DROP TABLE IF EXISTS tbl_address;
 DROP TABLE IF EXISTS tbl_member;
 CREATE TABLE IF NOT EXISTS tbl_member
 (
@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS tbl_member
     CONSTRAINT pk_member PRIMARY KEY (mem_id)
 ) Engine=InnoDB;
 
-CREATE TABLE IF NOT EXISTS tbl_addr
+CREATE TABLE IF NOT EXISTS tbl_address
 (
     addr_id        INT AUTO_INCREMENT,
     postcode       VARCHAR(5),
