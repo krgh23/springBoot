@@ -6,6 +6,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.min.app07.user.dto.LoginDto;
 import com.min.app07.user.dto.SignupDto;
 import com.min.app07.user.mapper.IUserMapper;
 
@@ -19,7 +20,7 @@ public class UserServiceImpl implements IUserService {
   private final PasswordEncoder passwordEncoder;
   
   @Override
-  public Map<String, String> singup(SignupDto signupDto) {
+  public Map<String, String> signup(SignupDto signupDto) {
     
     // 비밀번호 암호화
     signupDto.setUserPassword( passwordEncoder.encode(signupDto.getUserPassword()) );
@@ -46,4 +47,9 @@ public class UserServiceImpl implements IUserService {
     
   }
   
+  @Override
+  public LoginDto findByUsername(String username) {
+    return userMapper.selectUserByUsername(username);
+  }
+
 }

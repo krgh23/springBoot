@@ -12,22 +12,22 @@ import com.min.app07.user.service.IUserService;
 
 import lombok.RequiredArgsConstructor;
 
-
 @RequiredArgsConstructor
 @Controller
 public class UserController {
-  
+
   private final IUserService userService;
   
   @GetMapping("/user/signup") // 본문없는 void는 주소를 경로로 인식한다
   public void signup() {}
- 
+  
   @PostMapping("/user/signup")
   public String signup(SignupDto signupDto, Model model) {
-    Map<String, String> map =  userService.singup(signupDto);
+    Map<String, String> map = userService.signup(signupDto);
     model.addAttribute("message", map.get("message"));
     return map.get("path");
   }
+
 
   
   
