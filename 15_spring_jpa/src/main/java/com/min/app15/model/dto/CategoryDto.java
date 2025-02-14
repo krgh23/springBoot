@@ -1,6 +1,4 @@
-package com.min.app15.model.message;
-
-import java.util.Map;
+package com.min.app15.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,8 +13,19 @@ import lombok.ToString;
 @Setter
 @Builder
 @ToString
-public class ResponseMessage {
-  private int status;
-  private String message;
-  private Map<String, Object> results;
+public class CategoryDto {
+
+  private Integer categoryCode;
+  private String categoryName;
+  private Integer refCategoryCode;
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
 }

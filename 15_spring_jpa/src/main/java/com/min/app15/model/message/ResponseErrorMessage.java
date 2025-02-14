@@ -1,7 +1,5 @@
 package com.min.app15.model.message;
 
-import java.util.Map;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,8 +13,8 @@ import lombok.ToString;
 @Setter
 @Builder
 @ToString
-public class ResponseMessage {
-  private int status;
+public class ResponseErrorMessage {
+  private int code;
   private String message;
-  private Map<String, Object> results;
+  private String decribe;
 }

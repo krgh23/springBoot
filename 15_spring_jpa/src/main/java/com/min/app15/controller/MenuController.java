@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.min.app15.model.dto.MenuDto;
+import com.min.app15.model.exception.MenuNotFoundException;
 import com.min.app15.model.message.ResponseMessage;
 import com.min.app15.service.MenuService;
 
@@ -21,8 +22,18 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequiredArgsConstructor
 public class MenuController {
-
+  
   private final MenuService menuService;
+  
+  @GetMapping(value = "/categories", produces = "application/json")
+  public ResponseMessage findCategoryList() {
+    
+    return ResponseMessage.builder()
+                .status(200)
+                .message("카테고리 목록 조회 성공")
+                .results(Map.of("categories", menuService.findByCategoryList()))
+              .build();
+  }
   
   
   /*
@@ -71,7 +82,7 @@ public class MenuController {
   @PutMapping(value = "/menu/{menuCode}", produces = "application/json")
   public ResponseMessage modify(
       @PathVariable(name = "menuCode") Integer menuCode
-    , @RequestBody MenuDto menuDto) {
+    , @RequestBody MenuDto menuDto) throws MenuNotFoundException {
     
     menuDto.setMenuCode(menuCode);
     
@@ -90,7 +101,7 @@ public class MenuController {
    * send 누르기
    */
   @DeleteMapping(value = "/menu/{menuCode}", produces = "application/json")
-  public ResponseMessage delete(@PathVariable(name = "menuCode") Integer menuCode) {
+  public ResponseMessage delete(@PathVariable(name = "menuCode") Integer menuCode) throws MenuNotFoundException {
     
     menuService.deleteMenu(menuCode);
     
@@ -146,12 +157,12 @@ public class MenuController {
      * 1. 페이징 처리에 필요한 정보(size, page, sort)를 처리하는 인터페이스입니다.
      * 2. Pageable 인터페이스의 정보를 초기화할 수 있습니다.
      *   1) @PageableDefault Annotation
-     *   2) 프로퍼티에 등록 (application.properties) 
+     *   2) 프로퍼티에 등록 (application.properties)
      * 3. Pageable 인터페이스에 파라미터를 전달할 수 있습니다.
      *   1) page : page=1
      *   2) size : size=10
      *   3) sort : sort=menuCode,desc 또는 sort=menuCode,asc
-     * 4. 주의사항  
+     * 4. 주의사항 
      *   파라미터 page=1 로 전달되면 Pageable 인터페이스는 2페이지로 인식합니다.(시작 페이지가 0이기 때문입니다.)
      *   Pageable 인터페이스의 page 값은 -1 처리해야 합니다.
      */
@@ -190,5 +201,7 @@ public class MenuController {
         .build();
     
   }
+  
+  
   
 }
