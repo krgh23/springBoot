@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>결제 화면</title>
+
+<!-- axios -->
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+<!-- 포트원 SDK 설치하기 -->
+<script src="https://cdn.iamport.kr/v1/iamport.js"></script>
+
+<!--
+  리액트에서는 포트원 CDN 대신 아래 명령어를 이용해서 설치 후 사용하는 걸 권장합니다.
+  npm install iamport-npm
+  
+  import IMP from 'iamport-npm';
+  IMP.init('가맹점 식별코드')
+-->
+
+<script type="text/javascript">
+
+  IMP.init("imp23****");  //---------- 가맹점_식별코드
+
+  function requestPayco() {  //---------- KG이니시스_일반결제창_호출
+    IMP.request_pay({
+        channelKey: "channel-key-68d3a4f1-9fd4-4e7d-bad3-*****",  //---------- 채널키
+        pay_method: "card",
+        merchant_uid: "payment-" + crypto.randomUUID(), // 주문고유번호
+        name: "노르웨이 회전 의자",
+        amount: 10,
+        buyer_email: "gildong@gmail.com",
+        buyer_name: "홍길동",
+        buyer_tel: "010-4242-4242",
+        buyer_addr: "서울특별시 강남구 신사동",
+        buyer_postcode: "01181",
+      },
+      function (response) {
+        if(response.success) {          
+          console.log('---------- 결제결과 ----------');
+          console.log(response);
+          let msg = '결제가 완료되었습니다.';
+          msg += '\n주문번호=' + response.merchant_uid;
+          msg += '\n주문제품=' + response.name;
+          msg += '\n주문금액=' + response.paid_amount;
+          msg += '\n주문방식=' + response.pay_method;
+          msg += '\n승인번호=' + response.apply_num;
+          msg += '\n결제일자=' + new Date(response.paid_at * 1000);
+          alert(msg);
+          localStorage.setItem('merchant_uid', response.merchant_uid);  //---------- 결제 취소를 위해서 저장해 둔 merchant_uid
+          //---------- [1] 서버단으로 보낼 데이터 (결제정보 처리를 위해서)
+          const data = {
+            imp_uid: response.imp_uid,
+            merchant_uid: response.merchant_uid,
+            // 필요한 데이터가 있으면 더 추가해서 전달
+          }
+          const header = {
+            headers: {
+              'Content-Type': 'application/json',
+            }
+          }
+          axios.post('http://localhost:8080/payment/pay', data, header)
+            .then(res => {
+              //---------- [2] 서버단에서 처리가 완료된 경우
+              alert('서버단 처리 완료');
+            })
+            .catch(error => {
+              //---------- [3] 서버단에서 처리가 실패한 경우
+              console.log('---------- 서버단 처리 실패 ----------');
+              console.log(error);
+            })
+        } else {
+          let msg = '결제에 실패하였습니다.';
+          msg += '\n에러내용 : ' + response.error_msg;
+          alert(msg);
+        }
+      },
+    );
+  }
+  
+  function requestCancel() {
+    const local_merchant_uid = localStorage.getItem('merchant_uid');  //---------- 직전 결제 정보가 담겨져 있음
+    if(!local_merchant_uid) {
+      alert('결제 취소할 내역이 없습니다.');
+      return;
+    }
+    //---------- [1] 서버단으로 보낼 데이터 (결제정보 처리를 위해서) 
+    const data = {
+      merchant_uid: local_merchant_uid,
+      // 필요한 데이터가 있으면 더 추가해서 전달 (일부 취소의 경우 취소할 비용 전달이 필요)
+    }
+    const header = {
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    }
+    axios.post('http://localhost:8080/payment/cancel', data, header)
+    .then(res => {
+      //---------- [2] 서버단에서 처리가 완료된 경우
+      alert('서버단 처리 완료');
+      localStorage.removeItem('merchant_uid');
+    })
+    .catch(error => {
+      //---------- [3] 서버단에서 처리가 실패한 경우
+      console.log('---------- 서버단 처리 실패 ----------');
+      console.log(error);
+    })
+  }
+  
+</script>
+</head>
+<body>
+
+<div>
+  <button onclick="requestPayco()">페이코_결제</button>
+  <button onclick="requestCancel()">페이코_직전결제취소</button>
+</div>
+
+</body>
+</html>
